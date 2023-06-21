@@ -3,6 +3,7 @@ import { useFormik } from "formik"
 import MyAxiosInstance from '../../utils/axios';
 import toast, {Toaster} from 'react-hot-toast'
 import { Link, useNavigate } from "react-router-dom";
+import { SignInWithGoogle } from "../../utils/firebase1";
 const Login = ()=>{
 
 
@@ -10,6 +11,53 @@ const Login = ()=>{
     const goto = useNavigate()
 
     const axiosInstance = MyAxiosInstance();
+
+    const handleGoogle = async ()=>{
+
+      const login  = await SignInWithGoogle()
+
+      if(login)
+      {
+
+        const values = {
+          name:login.user.displayName,
+          email:login.user.email
+        }
+
+        axiosInstance.post('add-google-user',values).then((response)=>{
+
+
+          if(response.data.success)
+          {
+            toast.success("Login Successful")
+            localStorage.setItem('token',JSON.stringify(response.data.token))
+        
+            setTimeout(()=>{
+              toast.dismiss()
+              goto("/")
+            },1000)
+            
+          
+        
+          }
+          else
+          {
+            toast.error("An error occured!")
+          }
+          
+        
+        
+              })
+      }
+      else
+      {
+        toast.error("!AN ERROR OCCURED")
+      }
+      
+
+
+    
+    }
 
 
 // formik starts
@@ -122,7 +170,9 @@ const formik = useFormik({
                   </div>
                   
                   <button type="submit" class="w-full text-white bg-blue-700 p-2 rounded-md ">Login</button>
-                  <button type="button" class="w-full flex items-center justify-center gap-2 text-white bg-blue-700 p-2 rounded-md">
+                  <button
+                  onClick={()=>handleGoogle()}
+                  type="button" class="w-full flex items-center justify-center gap-2 text-white bg-blue-700 p-2 rounded-md">
   <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo" class="w-4 h-4" />
   <span>Login with Google</span>
 </button>

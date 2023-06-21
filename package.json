@@ -13,6 +13,7 @@
   "dependencies": {
     "@react-oauth/google": "^0.11.0",
     "axios": "^1.4.0",
+    "firebase": "^9.22.2",
     "formik": "^2.4.2",
     "parcel": "^2.9.2",
     "react": "^18.2.0",
